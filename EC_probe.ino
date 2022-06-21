@@ -67,20 +67,21 @@ void loop()
    
   int d = getDigit();             // Call getDigit() which converts ppm from int -> bytes so that it can be sent via UART 
   
-  for (int i = 0; i <= 2; i++){
+  for (int i = 0; i <= 2; i++){   // for loop for checking if value shows correctly on serial monitor
     Serial.print(x[d-i]); 
   }
   Serial.println();
   
-  if (BTserial.available()) {     // writing to BT port 
-  BTserial.write(d);              // var d stores number of digits in ppm value. 
-  for (int i = 0; i <= d; i++){
-    BTserial.write(x[d-i]); 
+  if (BTserial.available()) {     // sending ppm data via BT 
+    BTserial.write(d);              // var d stores number of digits in ppm value. 
+    for (int i = 0; i <= d; i++){
+      BTserial.write(x[d-i]);  
+    }
+  int z = Temperature;
+  BTserial.write(z);
   }
   
-  }
-  
-  delay(10000); //Do not make this less than 6 sec (6000)
+  delay(60000); //Do not make this less than 6 sec (6000)
 }
 ////////////////////////////////////////////////////////////////////////////////////
 void GetEC()
@@ -171,14 +172,14 @@ void Calibrate ()
 
 int getDigit()            // store individual digits of ppm value in an array (ie. 424 ppm -> x[] = {4, 2, 5} 
 {
-    int i, ppm_x;
+    int i, var_y;
     i = 0;
-    ppm_x = ppm; // used for calc
-    while ((ppm_x / 10) != 0) {
-      x[i++] = ppm_x % 10; 
-      ppm_x = ppm_x / 10;
+    var_y = ppm; // used for calc
+    while ((var_y / 10) != 0) {
+      x[i++] = var_y % 10; 
+      var_y = var_y / 10;
     }
-    x[i] = ppm_x % 10;
+    x[i] = var_y % 10;
     
     return i;
 }
