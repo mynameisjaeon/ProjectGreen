@@ -28,9 +28,11 @@ uart_port = serial.Serial(
 # Wait a second to let the port initialize
 time.sleep(1)
 
+
 try:
     while True:
         if uart_port.inWaiting() > 0:
+            # EC 
             size = uart_port.read(1)        # arduino will send no. of bytes
             intSize = int.from_bytes(size, "big") # byte -> int
             modifier = intSize                    # temporary var  
@@ -41,15 +43,15 @@ try:
                 data = intVal*10**modifier
                 modifier = modifier - 1
                 num = num + data
-
-#           print(intSize)
-#           print(intVal)
-#           print('EC : ' + str(num)+ ' ppm')
+            # Temperature
+            temp = uart_port.read()         # get temp val and conv. to int
+            intTemp = int.from_bytes(temp, "big")
+            # Datetime
             now = datetime.now()
             time = now.strftime("%Y/%m/%d %H:%M:%S")
-            print(time + '    EC : ' + str(num)+ ' ppm')
 
-            logfile.write(time + ',' + str(num) + '\n')
+            print(time + '\tEC : ' + str(num)+ ' ppm\tTemp : ' + str(intTemp) + 'C')
+            logfile.write(time + ',' + str(num) + ',' + str(intTemp) + '\n')
 
 except KeyboardInterrupt:
     print("Exiting Program")
